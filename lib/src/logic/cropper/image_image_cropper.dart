@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'dart:typed_data';
-
 import 'dart:ui';
 
 import 'package:crop_your_image/src/logic/cropper/errors.dart';
 import 'package:crop_your_image/src/logic/cropper/image_cropper.dart';
 import 'package:crop_your_image/src/logic/format_detector/format.dart';
 import 'package:crop_your_image/src/logic/shape.dart';
-
 import 'package:image/image.dart' hide ImageFormat;
 
 /// an implementation of [ImageCropper] using image package
@@ -37,20 +34,26 @@ class ImageImageCropper extends ImageCropper<Image> {
     if (topLeft.dx > bottomRight.dx || topLeft.dy > bottomRight.dy) {
       throw NegativeSizeError(topLeft: topLeft, bottomRight: bottomRight);
     }
-
-    final function = switch (shape) {
-      ImageShape.rectangle => _doCrop,
-      ImageShape.circle => _doCropCircle,
-    };
-
-    return function(
-      original,
-      topLeft: topLeft,
-      size: Size(
-        bottomRight.dx - topLeft.dx,
-        bottomRight.dy - topLeft.dy,
-      ),
-    );
+    switch (shape) {
+      case ImageShape.rectangle:
+        return _doCrop(
+          original,
+          topLeft: topLeft,
+          size: Size(
+            bottomRight.dx - topLeft.dx,
+            bottomRight.dy - topLeft.dy,
+          ),
+        );
+      case ImageShape.circle:
+        return _doCropCircle(
+          original,
+          topLeft: topLeft,
+          size: Size(
+            bottomRight.dx - topLeft.dx,
+            bottomRight.dy - topLeft.dy,
+          ),
+        );
+    }
   }
 }
 

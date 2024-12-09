@@ -20,13 +20,21 @@ final ImageParser<image.Image> imageImageParser = (data, {inputFormat}) {
   assert(tempImage != null);
 
   // check orientation
-  final parsed = switch (tempImage?.exif.exifIfd.orientation ?? -1) {
-    3 => image.copyRotate(tempImage!, angle: 180),
-    6 => image.copyRotate(tempImage!, angle: 90),
-    8 => image.copyRotate(tempImage!, angle: -90),
-    _ => tempImage!,
-  };
-
+  image.Image parsed;
+  switch (tempImage?.exif.exifIfd.orientation ?? -1) {
+    case 3:
+      parsed = image.copyRotate(tempImage!, angle: 180);
+      break;
+    case 6:
+      parsed = image.copyRotate(tempImage!, angle: 90);
+      break;
+    case 8:
+      parsed = image.copyRotate(tempImage!, angle: -90);
+      break;
+    default:
+      parsed = tempImage!;
+      break;
+  }
   return ImageDetail(
     image: parsed,
     width: parsed.width.toDouble(),
@@ -36,14 +44,28 @@ final ImageParser<image.Image> imageImageParser = (data, {inputFormat}) {
 
 image.Image? _decodeWith(Uint8List data, {ImageFormat? format}) {
   try {
-    return switch (format) {
-      ImageFormat.jpeg => image.decodeJpg(data),
-      ImageFormat.png => image.decodePng(data),
-      ImageFormat.bmp => image.decodeBmp(data),
-      ImageFormat.ico => image.decodeIco(data),
-      ImageFormat.webp => image.decodeWebP(data),
-      _ => image.decodeImage(data),
-    };
+    image.Image? result = null;
+    switch (format) {
+      case ImageFormat.jpeg:
+        result = image.decodeJpg(data);
+        break;
+      case ImageFormat.png:
+        result = image.decodePng(data);
+        break;
+      case ImageFormat.bmp:
+        result = image.decodeBmp(data);
+        break;
+      case ImageFormat.ico:
+        result = image.decodeIco(data);
+        break;
+      case ImageFormat.webp:
+        result = image.decodeWebP(data);
+        break;
+      default:
+        result = image.decodeImage(data);
+        break;
+    }
+    return result;
   } on image.ImageException {
     throw InvalidInputFormatError(format);
   }

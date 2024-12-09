@@ -7,7 +7,7 @@ import 'package:crop_your_image/crop_your_image.dart';
 /// state management class for _CropEditor
 /// see the link below for more details
 /// https://github.com/chooyan-eng/complex_local_state_management/blob/main/docs/local_state.md
-interface class CropEditorViewState {
+class CropEditorViewState {
   final Size viewportSize;
   final bool withCircleUi;
   final double? aspectRatio;
